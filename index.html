@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourist Guide</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <section class="hero">
+        <h1>Discover Amazing Tourist Places</h1>
+        <p>Explore beautiful destinations near you</p>
+    </section>
+
+    <div class="container">
+        <h1>Smart Tourist Guide</h1>
+
+        <div class="quick-tags">
+    <button onclick="quickSearch('bengaluru')">Bengaluru</button>
+    <button onclick="quickSearch('delhi')">Delhi</button>
+</div>
+
+        <input type="text" 
+               id="locationInput" 
+               list="locations" 
+               placeholder="Enter city name">
+
+        <datalist id="locations">
+            <option value="Bengaluru">
+            <option value="Delhi">
+            <option value="Mumbai">
+        </datalist>
+
+        <button onclick="searchPlaces()">Search</button>
+
+        <p id="loading"></p>
+
+        <div id="placesContainer"></div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
