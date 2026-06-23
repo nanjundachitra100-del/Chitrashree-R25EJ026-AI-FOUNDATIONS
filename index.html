@@ -3,44 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tourist Guide</title>
-    <link rel="stylesheet" href="style.css">
+    <title>The Daily Byte | News</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-50 text-gray-900 font-sans">
 
-<body>
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-black tracking-tight text-red-600">THE DAILY BYTE</a>
+            <a href="/admin" class="text-sm bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 transition">Writer Portal</a>
+        </div>
+    </header>
 
-    <section class="hero">
-        <h1>Discover Amazing Tourist Places</h1>
-        <p>Explore beautiful destinations near you</p>
-    </section>
-
-    <div class="container">
-        <h1>Smart Tourist Guide</h1>
-
-        <div class="quick-tags">
-    <button onclick="quickSearch('bengaluru')">Bengaluru</button>
-    <button onclick="quickSearch('delhi')">Delhi</button>
-</div>
-
-        <input type="text" 
-               id="locationInput" 
-               list="locations" 
-               placeholder="Enter city name">
-
-        <datalist id="locations">
-            <option value="Bengaluru">
-            <option value="Delhi">
-            <option value="Mumbai">
-        </datalist>
-
-        <button onclick="searchPlaces()">Search</button>
-
-        <p id="loading"></p>
-
-        <div id="placesContainer"></div>
-    </div>
-
-    <script src="script.js"></script>
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        {% if article %}
+            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                {% if article.image_url %}
+                    <img src="{{ article.image_url }}" alt="Cover Image" class="w-full h-96 object-cover">
+                {% endif %}
+                <div class="p-6 md:p-10">
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-600">{{ article.category }}</span>
+                    <h1 class="text-3xl md:text-5xl font-extrabold mt-2 mb-4 leading-tight">{{ article.title }}</h1>
+                    <p class="text-sm text-gray-500 mb-6">Published on {{ article.created_at }}</p>
+                    <div class="prose max-w-none text-gray-700 leading-relaxed text-lg">
+                        {{ article.content | safe }}
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <a href="/" class="text-blue-600 hover:underline">← Back to Homepage</a>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <h2 class="text-xl font-bold uppercase tracking-wide text-gray-500 mb-6 border-b pb-2">Latest Stories</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                {% for art in articles %}
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col overflow-hidden">
+                        {% if art.image_url %}
+                            <a href="/news/{{ art.slug }}">
+                                <img src="{{ art.image_url }}" alt="Cover Image" class="w-full h-48 object-cover">
+                            </a>
+                        {% endif %}
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-widest text-blue-600">{{ art.category }}</span>
+                                <h3 class="text-2xl font-bold mt-1 mb-2 hover:text-red-600 transition">
+                                    <a href="/news/{{ art.slug }}">{{ art.title }}</a>
+                                </h3>
+                                <p class="text-gray-600 mb-4 text-sm line-clamp-3">{{ art.summary }}</p>
+                            </div>
+                            <div class="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-50">
+                                <span>By Editorial Team</span>
+                                <span>{{ art.created_at }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if not articles %}
+                <div class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200">
+                    <p class="text-gray-500 italic mb-2">No news stories published yet.</p>
+                    <a href="/admin" class="text-blue-600 font-semibold hover:underline">Head to the Writer Portal to create your first post!</a>
+                </div>
+            {% endif %}
+        {% endif %}
+    </main>
 
 </body>
 </html>
