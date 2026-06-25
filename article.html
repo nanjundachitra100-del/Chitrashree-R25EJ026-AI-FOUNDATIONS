@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.title }} | The Daily Byte</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-black tracking-tight text-red-600">THE DAILY BYTE</a>
+            <a href="/admin" class="text-sm bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 transition">Writer Portal</a>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-8">
+        <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            {% if article.image_url and article.image_url.strip() != "" %}
+                <img src="{{ article.image_url }}" alt="Cover Image" class="w-full h-96 object-cover">
+            {% endif %}
+            <div class="p-6 md:p-10">
+                <span class="text-xs font-bold uppercase tracking-widest text-blue-600">{{ article.category }}</span>
+                <h1 class="text-3xl md:text-5xl font-extrabold mt-2 mb-4 leading-tight text-gray-900">{{ article.title }}</h1>
+                <p class="text-sm text-gray-500 mb-6">Published on {{ article.created_at }}</p>
+                
+                <div class="prose prose-red max-w-none text-gray-800 leading-relaxed text-base">
+                    {{ article.content | safe }}
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-100">
+                    <a href="/" class="text-blue-600 font-medium hover:underline">← Back to Homepage</a>
+                </div>
+            </div>
+        </article>
+    </main>
+
+</body>
+</html>

@@ -9,63 +9,65 @@
 <body class="bg-gray-50 text-gray-900 font-sans">
 
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <a href="/" class="text-2xl font-black tracking-tight text-red-600">THE DAILY BYTE</a>
-            <a href="/admin" class="text-sm bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 transition">Writer Portal</a>
+            
+            <form action="/" method="GET" class="w-full md:w-auto flex items-center">
+                <input type="text" name="q" value="{{ search_query or '' }}" placeholder="Search news..." class="w-full md:w-64 text-sm border border-gray-300 px-3 py-1.5 rounded-l focus:outline-none focus:ring-1 focus:ring-red-500">
+                <button type="submit" class="bg-gray-100 border border-l-0 border-gray-300 px-3 py-1.5 rounded-r text-sm hover:bg-gray-200">🔍</button>
+            </form>
+
+            <a href="/admin" class="text-sm bg-gray-900 text-white px-3 py-1.5 rounded hover:bg-gray-800 transition whitespace-nowrap">Writer Portal</a>
+        </div>
+        
+        <div class="border-t border-gray-100 bg-gray-50 text-xs font-semibold uppercase tracking-wider">
+            <div class="max-w-5xl mx-auto px-4 py-2.5 flex gap-6 overflow-x-auto whitespace-nowrap">
+                <a href="/" class="{% if not selected_cat %}text-red-600 font-bold{% else %}text-gray-600 hover:text-gray-900{% endif %}">All</a>
+                <a href="/?cat=Breaking" class="{% if selected_cat == 'Breaking' %}text-red-600 font-bold{% else %}text-gray-600 hover:text-gray-900{% endif %}">Breaking</a>
+                <a href="/?cat=Tech" class="{% if selected_cat == 'Tech' %}text-red-600 font-bold{% else %}text-gray-600 hover:text-gray-900{% endif %}">Technology</a>
+                <a href="/?cat=Business" class="{% if selected_cat == 'Business' %}text-red-600 font-bold{% else %}text-gray-600 hover:text-gray-900{% endif %}">Business</a>
+                <a href="/?cat=Culture" class="{% if selected_cat == 'Culture' %}text-red-600 font-bold{% else %}text-gray-600 hover:text-gray-900{% endif %}">Culture</a>
+            </div>
         </div>
     </header>
 
     <main class="max-w-4xl mx-auto px-4 py-8">
-        {% if article %}
-            <article class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                {% if article.image_url %}
-                    <img src="{{ article.image_url }}" alt="Cover Image" class="w-full h-96 object-cover">
-                {% endif %}
-                <div class="p-6 md:p-10">
-                    <span class="text-xs font-bold uppercase tracking-widest text-blue-600">{{ article.category }}</span>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mt-2 mb-4 leading-tight">{{ article.title }}</h1>
-                    <p class="text-sm text-gray-500 mb-6">Published on {{ article.created_at }}</p>
-                    <div class="prose max-w-none text-gray-700 leading-relaxed text-lg">
-                        {{ article.content | safe }}
-                    </div>
-                    <div class="mt-8 pt-6 border-t border-gray-100">
-                        <a href="/" class="text-blue-600 hover:underline">← Back to Homepage</a>
-                    </div>
-                </div>
-            </article>
-        {% else %}
-            <h2 class="text-xl font-bold uppercase tracking-wide text-gray-500 mb-6 border-b pb-2">Latest Stories</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                {% for art in articles %}
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col overflow-hidden">
-                        {% if art.image_url %}
-                            <a href="/news/{{ art.slug }}">
-                                <img src="{{ art.image_url }}" alt="Cover Image" class="w-full h-48 object-cover">
-                            </a>
-                        {% endif %}
-                        <div class="p-6 flex-1 flex flex-col justify-between">
-                            <div>
-                                <span class="text-xs font-bold uppercase tracking-widest text-blue-600">{{ art.category }}</span>
-                                <h3 class="text-2xl font-bold mt-1 mb-2 hover:text-red-600 transition">
-                                    <a href="/news/{{ art.slug }}">{{ art.title }}</a>
-                                </h3>
-                                <p class="text-gray-600 mb-4 text-sm line-clamp-3">{{ art.summary }}</p>
-                            </div>
-                            <div class="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-50">
-                                <span>By Editorial Team</span>
-                                <span>{{ art.created_at }}</span>
-                            </div>
+        <h2 class="text-xl font-bold uppercase tracking-wide text-gray-500 mb-6 border-b pb-2">
+            {% if search_query %} Search Results for "{{ search_query }}"
+            {% elif selected_cat %} {{ selected_cat }} Stories
+            {% else %} Latest Stories {% endif %}
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+            {% for art in articles %}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col overflow-hidden">
+                    {% if art.image_url and art.image_url.strip() != "" %}
+                        <a href="/news/{{ art.slug }}">
+                            <img src="{{ art.image_url }}" alt="Cover Image" class="w-full h-48 object-cover">
+                        </a>
+                    {% endif %}
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-widest text-blue-600">{{ art.category }}</span>
+                            <h3 class="text-2xl font-bold mt-1 mb-2 hover:text-red-600 transition">
+                                <a href="/news/{{ art.slug }}">{{ art.title }}</a>
+                            </h3>
+                            <p class="text-gray-600 mb-4 text-sm line-clamp-3">{{ art.summary }}</p>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-50">
+                            <span>By Editorial Team</span>
+                            <span>{{ art.created_at }}</span>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-            
-            {% if not articles %}
-                <div class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200">
-                    <p class="text-gray-500 italic mb-2">No news stories published yet.</p>
-                    <a href="/admin" class="text-blue-600 font-semibold hover:underline">Head to the Writer Portal to create your first post!</a>
                 </div>
-            {% endif %}
+            {% endfor %}
+        </div>
+        
+        {% if not articles %}
+            <div class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200">
+                <p class="text-gray-500 italic mb-2">No news stories found matching your criteria.</p>
+                <a href="/" class="text-blue-600 font-semibold hover:underline">Reset filters and see all articles</a>
+            </div>
         {% endif %}
     </main>
 
