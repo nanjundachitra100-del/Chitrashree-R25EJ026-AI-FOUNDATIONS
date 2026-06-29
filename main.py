@@ -6,6 +6,9 @@ import sqlite3
 import re
 import os
 
+# Import Mangum to bridge FastAPI with Vercel serverless functions
+from mangum import Mangum
+
 app = FastAPI()
 templates = Jinja2Templates(directory=".")
 
@@ -206,3 +209,6 @@ async def delete_portfolio(portfolio_id: int, db=Depends(get_db)):
     cursor.execute("DELETE FROM projects WHERE portfolio_id = ?", (portfolio_id,))
     db.commit()
     return RedirectResponse(url="/dashboard", status_code=303)
+
+# --- VERCEL ASGI HANDLER ---
+handler = Mangum(app)
