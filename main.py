@@ -212,3 +212,5 @@ async def delete_portfolio(portfolio_id: int, db=Depends(get_db)):
 
 # --- VERCEL ASGI HANDLER ---
 handler = Mangum(app)
+# --- VERCEL ASGI HANDLER ---
+handler = Mangum(app)
